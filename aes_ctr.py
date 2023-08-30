@@ -22,11 +22,25 @@ class AES_CTR:
         # encrypt
         encrypted = cipher.encrypt(plain_text.encode())
         
-        return b64encode(iv + encrypted).decode()   
+        return b64encode(iv + encrypted).decode() 
+
+    def decrypt(self, encrypted_text):
+
+        # decode from the b64encoding
+        encrypted_text  = b64decode(encrypted_text.encode())
+        # generate prepended iv from the e-text and cipher text
+        iv  = encrypted_text[:12]
+        cipher_text = encrypted_text[12:]
+        # create counter object
+        counter = Counter.new(32, prefix = iv )
+        cipher = AES.new(self.key, AES.MODE_CTR, counter = counter)
+        plain_text = cipher.decrypt(cipher_text)
+        return plain_text.decode()  
+
+
+      
 
         
 
-aes =AES_CTR('AUGAH')
 
-print(aes.encrypt('augah'))
 
